@@ -1,0 +1,4 @@
+enum Trama {
+    LISA, RAYADA, CUADROS, ESTAMPADO
+}
+

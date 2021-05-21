@@ -1,0 +1,4 @@
+enum Categoria {
+    CALZADO, SUPERIOR, INFERIOR, ACCESORIOS
+}
+
