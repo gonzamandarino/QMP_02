@@ -13,4 +13,11 @@ public class Atuendo {
         this.inferior = i;
         this.calzado = c;
     }
+
+    boolean aptaParaTemperatura(int temperatura) {
+        return true;
+    }
+    boolean aptaParaHumedad(Humedad humedad) {
+        return true;
+    }
 }

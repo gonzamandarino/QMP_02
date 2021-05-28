@@ -1,12 +1,17 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class Usuarie {
-    List<Prenda> prendas;
-    List<Uni> uniformes;
+    List<Guardarropas> armarios = new ArrayList<>();
+    AsesorDeImagen asesor;
 
-    public void agregarPrenda(TipoPrenda tipoP, Material mat, Trama trama, Color colorP, Color colorS, Estacion e) {
+    public Usuarie(AsesorDeImagen asesor, Guardarropas armario) {
+        this.armarios.add(armario);
+        this.asesor= asesor;
+    }
+
+    public void agregarPrenda(TipoPrenda tipoP, Material mat, Trama trama, Color colorP, Color colorS, Estacion e,Guardarropas armario) {
 
         Borrador b = new Borrador(tipoP);
         b.especificarMaterial(mat);
@@ -15,46 +20,38 @@ public class Usuarie {
         b.especificarTrama(trama);
         b.especificarEstacion(e);
 
-        this.prendas.add(b.crearPrenda());
-    }
-    public Uni sugerirUni() {
-       return random->uniformes;
-    }
-
-    public Atuendo sugerirAtuendoSegunClima() {
-        List<Map<String, Object>> c = getClima();
-
-        if c.get(0).get("Tempreature") < 20 {
-
-            Stream<Prenda> prendasFrio = this.prendas.stream().filter(p -> p.estacion == Estacion.FRIO);
-            return elegirAtuendoRandomSegunEstacion(prendasFrio);
-
-        }else {
-            Stream<Prenda> prendasCalor= this.prendas.stream().filter(p -> p.estacion == Estacion.FRIO);
-            return elegirAtuendoRandomSegunEstacion(prendasCalor);
-        }
+        getArmario(armario).agregarPrenda(b.crearPrenda());
 
     }
 
-    private Atuendo elegirAtuendoRandomSegunEstacion(Stream<Prenda> p) {
-
-        return new Atuendo(elegirPrendaRandomSegunCategoria(p,Categoria.ACCESORIOS),
-                elegirPrendaRandomSegunCategoria(p,Categoria.SUPERIOR),
-                elegirPrendaRandomSegunCategoria(p,Categoria.INFERIOR),
-                elegirPrendaRandomSegunCategoria(p,Categoria.CALZADO));
-
+    public void cambiarAsesor(AsesorDeImagen asesor) {
+        this.asesor = asesor;
     }
 
-
-    private List<Prenda> elegirPrendaRandomSegunCategoria(Stream<Prenda> p, Categoria c) {
-        List<Prenda> lista = new arrayList;
-        lista.add(random-> p.filter(x -> x.getCategoria() == c));
-        return lista;
+    public void agregarArmario(Guardarropas armario) {
+        armarios.add(armario);
     }
 
-    public List<Map<String, Object>> getClima() {
+   public Atuendo sugerirAtuendoSegunClimaEnLugarYdeQueArmario(String direccion, Guardarropas armario)  {
+        if (!this.armarios.contains(armario)) {
+            throw new ArmarioException;
+       }
+        return asesor.sugerirAtuendo(direccion,armario);
+   }
+
+   public Guardarropas getArmario(Guardarropas armario) {
+       try {
+           int i = this.armarios.indexOf(armario);
+           return this.armarios.get(i);
+       } catch (ArmarioException e){
+           throw new ArmarioException;
+       }
+
+   }
+
+    public List<Map<String, Object>> getClima(String direccion) {
         AccuWeatherAPI apiClima = new AccuWeatherAPI();
-        return apiClima.getWeather("Buenos Aires, Argentina");
+        return apiClima.getWeather(direccion);
 
     }
 }
